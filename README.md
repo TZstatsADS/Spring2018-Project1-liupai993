@@ -18,11 +18,11 @@ Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by
 ```
 # GR5243
 proj/
-©À©¤©¤ lib/nec
-©À©¤©¤ data/original data set
-©À©¤©¤ doc/output files
-©À©¤©¤ figs/output images
-©¸©¤©¤ output/output data sets
+-- lib/nec
+-- data/original data set
+-- doc/output files
+-- figs/output images
+-- output/output data sets
 ```
 
 Please see each subfolder for a README file.
