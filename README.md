@@ -16,12 +16,13 @@ Term: Spring 2018
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
 ```
+# GR5243
 proj/
-â”œâ”€â”€ lib/
-â”œâ”€â”€ data/
-â”œâ”€â”€ doc/
-â”œâ”€â”€ figs/
-â””â”€â”€ output/
+©À©¤©¤ lib/nec
+©À©¤©¤ data/original data set
+©À©¤©¤ doc/output files
+©À©¤©¤ figs/output images
+©¸©¤©¤ output/output data sets
 ```
 
 Please see each subfolder for a README file.
