@@ -143,8 +143,9 @@ However, if we instead looking at the number of words in the speeches, we actual
 
 ```{r plot2}
 #plot(table_1$date, table_1$Words)
+
 ggplot(table_1)+
-  geom_point(mapping = aes(x = date, y = Words, colour=Party))+
+  geom_point(mapping = aes(x = date, y = nwords, colour=Party))+
   xlab("Years")+
   ylab("Total words in angurals")+
   labs(title="Total Words v.s Time")
