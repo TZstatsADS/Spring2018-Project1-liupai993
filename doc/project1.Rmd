@@ -1,0 +1,386 @@
+---
+title: "Compare the Difference in Inaugurals over Different Times"
+author: "Shiyu Liu"
+date: "1/31/2018"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE) # This sets the `echo` option to FALSE for all code chunks
+knitr::opts_chunk$set(results = 'show')
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r version, results='hide'}
+print(R.version)
+```
+
+```{r lib, warning=FALSE, results='hide', message=FALSE}
+library(tm)
+library(ggplot2)
+library(wordcloud)
+library(RColorBrewer)
+library(dplyr)
+library(tidytext)
+library(stringr)
+library(text2vec)
+library(dplyr)
+
+path<-getwd()
+folder.path <- "../data/inaugurals/"
+speeches<-list.files(path = folder.path, pattern = "*.txt")
+prex.out<- substr(speeches, 6, nchar(speeches)-4)
+
+ff.all<-Corpus(DirSource(folder.path))
+```
+
+### Introduction:
+
+In this report we will take a look at the difference bewtween the inaugurals in different eras. That is, we will try to find how the inaugurals change from 1789 to 2017. To be more specific, we will explore the changes first from the length of the sentences and words used in the speeches, and then we will try to find the different topics in different eras in the speech. Finally, we tried to find the similarity of inaugurals between each eras in US history. 
+
+  
+
+### Sentences & words length changes over time: 
+
+Firstly, we read the inaugurals from the txt file and used some data cleaning/manipulation skills to link the speeches to the information of each presidents. Then we counted the total number of words and sentences in the speeches and hence calculated the average sentence length in each speech. 
+
+Here is a bar chart to show average sentence lengths in some representive Presidents' inaugurals:
+
+```{r table, warning=FALSE, message=FALSE}
+end_sentence<-numeric(length(speeches))
+nwords<-numeric(length(speeches))
+nc<-numeric(length(speeches))
+words<-rep(NA, length(speeches))
+
+for(i in 1:length(speeches)){
+  words[i]<-readLines(con = paste(substr(path, 1,nchar(path)-3),"data/inaugurals/", speeches[i], sep = ""))
+  #print(words)
+  words[i]<-gsub("M[rs][rs]?\\.?", "A", words[i])
+  words[i]<-gsub("\\.[A-Z0-9]", "\\. I", words[i])
+  end_sentence[i]<-length(gregexpr("[//.?!]", words[i])[[1]])
+  nwords[i]<-length(strsplit(words[i], split = " ")[[1]])
+  nc[i]<-nchar(words[i])
+}
+t_average_length<-data.frame(prex.out, end_sentence, nwords, averageLength = nwords/end_sentence, nc)
+
+t<-t_average_length[order(t_average_length$averageLength),]
+t_select<-t_average_length[c(1,18, 6, 40, 12, 20, 9),]
+ggplot(data = t_select, aes(x = prex.out, y = averageLength))+
+  geom_bar(stat = "identity")+
+  ylab("Average sentence length")+
+  xlab("Some Presidents")+
+  labs(title="Average Sentence length of some Presidents")
+
+```
+
+From the bar chart we can see that the first President George Washington loved to use long sentence in his speech: the average length of sentence in his speech is greater than 60 words. In contrast, President Donald Trump's each sentence only contains about 16 words on average. This bar chart makes us to think that what happens in difference of sentence length of Trumps and George Washington is just a special case or there is a trend that presients would shorter sentences as they approach to more recent time?
+
+To figure out this question, I linked data set of speeches to the data set with the dates of inaugurals and drew the scatter plot as following:
+
+
+```{r plot}
+date <-read.table(file = paste(substr(path, 1,nchar(path)-3),"data/InauguationDates.txt", sep =""), sep = "\t", header = TRUE)
+info<-read.csv(paste(substr(path, 1,nchar(path)-3),"data/InaugurationInfo.csv", sep =""))
+
+info$M<-paste(info$File, info$Term, sep = "-")
+table<-merge(info, t_average_length, by.x = "M", by.y ="prex.out")
+names(table)[2]<-"President"
+table$date<-numeric(nrow(table))
+date$PRESIDENT<-as.character(date$PRESIDENT)
+table$President<-as.character(table$President)
+for( i in 1 : nrow(info)){
+  table$President[i]<-gsub("[A-Z]\\.\\s", "", table$President[i])
+  for(j in 1:nrow(date)){
+    date$PRESIDENT[j]<-gsub("[A-Z]\\.\\s", "", date$PRESIDENT[j])
+    if(date$PRESIDENT[j] == table$President[i]){
+      if(table$Term[i] == 1){
+        table$date[i] <-as.character(date[j, 2])
+      } else if(table$Term[i] == 2){
+        table$date[i] <-as.character(date[j, 3])
+      } else if(table$Term[i] == 3){
+        table$date[i] <-as.character(date[j, 4])
+      } else{
+        table$date[i] <-as.character(date[j, 5])
+      }
+    }
+  }
+}
+write.csv(table[, -ncol(table)], paste(substr(path, 1,nchar(path)-3),"output/inau_table.csv", sep =""))
+table$date<-as.integer(substr(table$date, nchar(table$date)-3, nchar(table$date)))
+table_1<-table[-which(table$date == 0), ]
+#plot(table_1$date, table_1$averageLength)
+ggplot(table_1)+
+  geom_point(mapping = aes(x = date, y = averageLength, colour=Party))+
+  xlab("Years")+
+  ylab("Average Sentence Length")+
+  labs(title="Average Sentence Length v.s Time")
+```
+
+From the scatter plot we can see a trend that the average sentence length is decreasing as time passing. In this sense, more recent the inaugurals were, the shorter sentence the presidents tended to use.
+
+We can run the linear regression using the Average Sentence Length against the Years:
+
+```{r lm1}
+summary(lm(averageLength~date, data = table_1))
+```
+
+From the regression table we find that there are very strong significant statistical evdience saying that with variable *date* increase "averageLength" will decrease. 
+
+However, if we instead looking at the number of words in the speeches, we actually cannot see any obvious trend:
+
+```{r plot2}
+#plot(table_1$date, table_1$Words)
+ggplot(table_1)+
+  geom_point(mapping = aes(x = date, y = Words, colour=Party))+
+  xlab("Years")+
+  ylab("Total words in angurals")+
+  labs(title="Total Words v.s Time")
+```
+
+We further compared the length of words chosen in each President's inaugural:
+
+```{r plot3}
+#plot(table_1$date, table_1$nc/table_1$nwords)
+ggplot(table_1)+
+  geom_point(mapping = aes(x = date, y = nc/nwords, colour=Party))+
+  xlab("Years")+
+  ylab("Average words Length")+
+  labs(title="Average words Length v.s Time")
+```
+
+This plot shows that the presidents before 1850 liked to use longer and complicated words while more recent presidents would try to use simple words. This result also has statistical significance(very small p-value):
+
+```{r lm2}
+summary(lm(nc/nwords~date, data = table_1))
+```
+
+To conclude the first part, we found that far back in US history, the Presidents trend to use longer and more complicated words and sentences in their inaugurals while recent Presidents just did the opposite. There could be many reasons behind this, but we will not have an in-depth discussion here.
+
+## Topic change in different era:
+
+Seondly, we try to find what are important topics that appearing in the inaugurals via word cloud:
+
+To show the word cloud with more meaningful words we first removed "stopword" such as "the, that, you, I", etc. from our data set.
+
+```{r overallcloud}
+ff.all<-tm_map(ff.all, stripWhitespace)
+ff.all<-tm_map(ff.all, content_transformer(tolower))
+ff.all<-tm_map(ff.all, removeWords, stopwords("english"))
+ff.all<-tm_map(ff.all, removeWords, character(0))
+ff.all<-tm_map(ff.all, removePunctuation)
+tdm.all<-TermDocumentMatrix(ff.all)
+tdm.tidy=tidy(tdm.all)
+tdm.overall=summarise(group_by(tdm.tidy, term), sum(count))
+
+```
+
+
+The overall Word Cloud:
+
+```{r oc}
+
+wordcloud(tdm.overall$term, tdm.overall$`sum(count)`,
+          scale=c(5,0.5),
+          max.words=100,
+          min.freq=1,
+          random.order=FALSE,
+          rot.per=0.3,
+          use.r.layout=T,
+          random.color=FALSE,
+          colors=brewer.pal(9,"Blues"))
+
+
+```
+
+One probelm of this word cloud is that there are still some modal verb such as "will", "must", "shall", "can" and some common words such as "people", "government", "one". Thus, we further removed these words from the data.
+
+We used the standard Timeline on Wikipedia to divide the history of U.S into 5 parts: 
+
+* 1798-1849: Federalist Era and Age of Reform
+
+* 1849-1918: Civil War, Reconstruction Era, Progressive Era
+
+* 1918-1945: Post-WWI, the Great Depression, and World War II
+
+* 1945-1991: Post-WWII, Cold War
+
+* 1991-2017: Globalization and the new economy
+
+Then we drew the word cloud for each of five eras:
+
+```{r five}
+
+dtm <- DocumentTermMatrix(ff.all,control = list(weighting = function(x) weightTfIdf(x, normalize =FALSE),stopwords = TRUE))
+ff.dtm=tidy(dtm)
+
+era<-c(1789, 1849, 1918, 1945, 1991, 2018)
+color<-c("Reds", "Blues", "BuGn", "Greens", "Greys")
+#par(mfrow = c(2,1))
+for(i in 1:5){
+  ff.1<-Corpus(VectorSource(words[which(table$date>=era[i] &table$date< era[i+1])]))
+  ff.1<-tm_map(ff.1, stripWhitespace)
+  ff.1<-tm_map(ff.1, content_transformer(tolower))
+  ff.1<-tm_map(ff.1, removeWords, stopwords("english"))
+  ff.1<-tm_map(ff.1, removeWords, c("will", "shall", "government", "people", "must", "can", "may", "one"))
+  ff.1<-tm_map(ff.1, removeWords, character(0))
+  ff.1<-tm_map(ff.1, removePunctuation)
+  tdm.1<-TermDocumentMatrix(ff.1)
+  tdm.tidy=tidy(tdm.1)
+  tdm.over1=summarise(group_by(tdm.tidy, term), sum(count))
+  
+  wordcloud(tdm.over1$term, tdm.over1$`sum(count)`,
+            scale=c(4,0.5),
+            max.words=50,
+            min.freq=1,
+            random.order=FALSE,
+            rot.per=0.3,
+            use.r.layout=T,
+            random.color=FALSE,
+            colors=brewer.pal(9,color[i]))
+  text(x = 0, y = 0, paste("From", era[i], "to", era[i+1]))
+}
+```
+
+As we can see from the five word clouds, even though there are some common words in all eras, difference in the topics or words chosen are still obvious.
+
+For example, in the graph of first two eras we can see that words such as "States" and "Constitution" are very large while in last two we find the recent leaders tried to emphasize on the importance of "World" and "nation".
+
+Also, the word "peace" is emphasized in each era that after a major war: after Indepedence war, after WWI and after WWII. This could indicate that only the war would bring the real desire toward "Peace". 
+
+Other changes can also noticed such as the words "free" and "freedom" shows in recent years but not in the remote past. 
+
+
+## Similarities over times
+
+In this part, we will caculate the similarities between the speeches from different eras. To be more specific, I first vectorized the speeches, and then used the "Jacarrd Method" to see the similarities between the speeches over eras.
+
+The result is presented in the following matrix:
+
+```{r sim}
+prep_fun <- function(x) {
+  x %>% 
+    # make text lower case
+    str_to_lower %>% 
+    # remove non-alphanumeric symbols
+    str_replace_all("[^[:alnum:]]", " ") %>% 
+    # collapse multiple spaces
+    str_replace_all("\\s+", " ")
+}
+words_clean <- prep_fun(words)[-which(table$date == 0)]
+
+word_set1<-words_clean[which(table$date>=1789 &table$date< 1849)]
+word_set2<-words_clean[which(table$date>=1849 &table$date< 1918)]
+word_set3<-words_clean[which(table$date>=1918 &table$date< 1945)]
+word_set4<-words_clean[which(table$date>=1945 &table$date< 1991)]
+word_set5<-words_clean[which(table$date>=1991 &table$date< 2018)]
+
+it1 = itoken(word_set1, progressbar = FALSE)
+it2 = itoken(word_set2, progressbar = FALSE)
+it3 = itoken(word_set3, progressbar = FALSE)
+it4 = itoken(word_set4, progressbar = FALSE)
+it5 = itoken(word_set5, progressbar = FALSE)
+
+it = itoken(words_clean, progressbar = FALSE)
+v = create_vocabulary(it) %>% 
+        prune_vocabulary(doc_proportion_max = 0.1, term_count_min = 5)
+vectorizer = vocab_vectorizer(v)
+
+dtm<-list()
+dtm[[1]] = create_dtm(it1, vectorizer)
+
+dtm[[2]] = create_dtm(it2, vectorizer)
+
+dtm[[3]] = create_dtm(it3, vectorizer)
+
+dtm[[4]] = create_dtm(it4, vectorizer)
+
+dtm[[5]] = create_dtm(it5, vectorizer)
+
+
+similarity<-matrix(nrow = 5, ncol =5)
+for(i in 1:5){
+  for(j in 1:5){
+    s<-sim2(dtm[[i]], dtm[[j]], method = "jaccard", norm = "none")
+    if(i == j){
+      similarity[i, j]<-(sum(s)-i)/(ncol(s)*nrow(s)-i)
+    } else{
+      similarity[i, j]<-sum(s)/(ncol(s)*nrow(s))
+    }
+  }
+}
+similarity
+colnames(similarity)<-c("1789-1849", "1849-1918", "1918-1945", "1945-1991", "1991-2017")
+
+write.csv(similarity, paste(substr(path, 1,nchar(path)-3),"output/similarity matrix.csv", sep =""))
+
+draw<-round(100 * similarity)
+#draw
+
+image(1:5, 1:5, draw,col = c("#ad9190", "#8d7f8e", "#505f7c", "#A50F15", "#6c6c84","#505f7c", "#505f7c","#3b4c68", "#253954", "#16223a"), ann = F, axes = FALSE)
+
+text(rep(1:5, 5), rep(1:5, each = 5), round(similarity, digits = 3), col ="#eae6e7")
+axis(3, at = 1:5, labels=colnames(similarity),srt=45,tick=FALSE, cex.axis = 1)
+axis(2, at = 1:5, labels=colnames(similarity),srt=45,tick=FALSE, cex.axis = 0.5)
+```
+
+<p align="right"><font size = 0.5>(Special thanks to Heng Huang for selecting decent colors of the matrix.)</font></p>
+
+The darker color means that the similarities is higher between those two eras. Then we can find that the speeches in each era are pretty similar to each other, which can be shown by the darker colors on the diagonal. We can also find that the neaby eras are more likely to have higher similarities, for example the most recent era, 1991-2017, has higher similarity with 1945-1991 and 1918-1945 than that with 1895-1918. However, the simlarity of speeches from 1789-1845 and from 1845 to 1918 are lower: this could be explained by the rapidlly change of ideas in that age. It worth noticed that even in the era 1895-1918, the self-similarity is the lowest among all eras. 
+
+## Appendix:
+
+#### Set up necessary settings:
+
+```{r ref.label='setup', eval=FALSE, echo=TRUE}
+```
+```{r ref.label='version', eval=FALSE, echo=TRUE}
+```
+
+#### Load packages:
+
+```{r ref.label='lib', eval=FALSE, echo=TRUE}
+```
+
+#### prepare tables and clean data:
+
+```{r ref.label='table', eval=FALSE, echo=TRUE}
+```
+
+#### draw plot of sentence length
+
+```{r ref.label='plot', eval=FALSE, echo=TRUE}
+```
+
+#### run regression
+
+```{r ref.label='lm1', eval=FALSE, echo=TRUE}
+```
+
+#### draw plot of words and average words length
+
+```{r ref.label='plot2', eval=FALSE, echo=TRUE}
+```
+```{r ref.label='plot3', eval=FALSE, echo=TRUE}
+```
+```{r ref.label='lm2', eval=FALSE, echo=TRUE}
+```
+
+#### draw overall cloud
+
+```{r ref.label='overallcloud', eval=FALSE, echo=TRUE}
+```
+```{r ref.label='oc', eval=FALSE, echo=TRUE}
+```
+
+#### Draw five era cloud
+
+```{r ref.label='five', eval=FALSE, echo=TRUE}
+```
+
+#### prepare and draw similarity matrix
+
+```{r ref.label='sim', eval=FALSE, echo=TRUE}
+```
+
