@@ -1,0 +1,59 @@
+"","M","President","File","Term","Party","Words","end_sentence","nwords","averageLength","nc"
+"1","AbrahamLincoln-1","Abraham Lincoln","AbrahamLincoln",1,"Republican","3637",135,3615,26.7777777777778,20998
+"2","AbrahamLincoln-2","Abraham Lincoln","AbrahamLincoln",2,"Republican","700",26,698,26.8461538461538,3924
+"3","AndrewJackson-1","Andrew Jackson","AndrewJackson",1,"Democratic","1128",25,1124,44.96,6805
+"4","AndrewJackson-2","Andrew Jackson","AndrewJackson",2,"Democratic","1176",30,1171,39.0333333333333,7048
+"5","BarackObama-1","Barack Obama","BarackObama",1,"Democratic","2395",122,2392,19.6065573770492,13334
+"6","BarackObama-2","Barack Obama","BarackObama",2,"Democratic","2096",90,2091,23.2333333333333,11892
+"7","BenjaminHarrison-1","Benjamin Harrison","BenjaminHarrison",1,"Republican","4392",157,4385,27.9299363057325,26143
+"8","CalvinCoolidge-1","Calvin Coolidge","CalvinCoolidge",1,"Republican","4055",196,4055,20.6887755102041,23923
+"9","DonaldJTrump-1","Donald Trump","DonaldJTrump",1,"Republican","TBD",1,21,21,146
+"10","DwightDEisenhower-1","Dwight Eisenhower","DwightDEisenhower",1,"Republican","2459",128,2447,19.1171875,13898
+"11","DwightDEisenhower-2","Dwight Eisenhower","DwightDEisenhower",2,"Republican","1658",92,1637,17.7934782608696,9083
+"12","FranklinDRoosevelt-1","Franklin Roosevelt","FranklinDRoosevelt",1,"Democratic","1880",86,1881,21.8720930232558,10890
+"13","FranklinDRoosevelt-2","Franklin Roosevelt","FranklinDRoosevelt",2,"Democratic","1808",96,1800,18.75,10546
+"14","FranklinDRoosevelt-3","Franklin Roosevelt","FranklinDRoosevelt",3,"Democratic","1359",74,1336,18.0540540540541,7536
+"15","FranklinDRoosevelt-4","Franklin Roosevelt","FranklinDRoosevelt",4,"Democratic","559",27,543,20.1111111111111,2982
+"16","FranklinPierce-1","Franklin Pierce","FranklinPierce",1,"Democratic","3336",104,3329,32.0096153846154,20057
+"17","GeorgeBush-1","George Bush","GeorgeBush",1,"Republican","2320",148,2321,15.6824324324324,12473
+"18","GeorgeWashington-1","George Washington","GeorgeWashington",1,NA,"1431",23,1427,62.0434782608696,8608
+"19","GeorgeWashington-2","George Washington","GeorgeWashington",2,NA,"135",4,135,33.75,786
+"20","GeorgeWBush-1","George Bush","GeorgeWBush",1,"Republican","1592",96,1592,16.5833333333333,9012
+"21","GeorgeWBush-2","George Bush","GeorgeWBush",2,"Republican","2071",99,2070,20.9090909090909,11891
+"22","GroverCleveland-I-1","Grover Cleveland - I","GroverCleveland-I",1,"Democratic","1686",44,1676,38.0909090909091,10121
+"23","GroverCleveland-II-2","Grover Cleveland - II","GroverCleveland-II",2,"Democratic","2015",58,2013,34.7068965517241,12323
+"24","HarrySTruman-1","Harry Truman","HarrySTruman",1,"Democratic","2273",118,2270,19.2372881355932,13622
+"25","HerbertHoover-1","Herbert Hoover","HerbertHoover",1,"Republican","3672",169,3828,22.6508875739645,23497
+"26","JamesBuchanan-1","James Buchanan","JamesBuchanan",1,"Democratic","2831",89,2817,31.6516853932584,16787
+"27","JamesGarfield-1","James Garfield","JamesGarfield",1,"Republican","2979",111,2970,26.7567567567568,17724
+"28","JamesKPolk-1","James Polk","JamesKPolk",1,"Democratic","4809",153,4789,31.3006535947712,28694
+"29","JamesMadison-1","James Madison","JamesMadison",1,"Democratic-Republican Party","1177",21,1174,55.9047619047619,6992
+"30","JamesMadison-2","James Madison","JamesMadison",2,"Democratic-Republican Party","1211",33,1209,36.6363636363636,7146
+"31","JamesMonroe-1","James Monroe","JamesMonroe",1,"Democratic-Republican Party","3375",123,3367,27.3739837398374,19865
+"32","JamesMonroe-2","James Monroe","JamesMonroe",2,"Democratic-Republican Party","4472",133,4461,33.5413533834586,26304
+"33","JimmyCarter-1","Jimmy Carter","JimmyCarter",1,"Democratic","1229",54,1212,22.4444444444444,6852
+"34","JohnAdams-1","John Adams","JohnAdams",1,"Fedralist","2321",37,2319,62.6756756756757,13862
+"35","JohnFKennedy-1","John Kennedy","JohnFKennedy",1,"Democratic","1366",55,1342,24.4,7538
+"36","JohnQuincyAdams-1","John Quincy Adams","JohnQuincyAdams",1,"Democratic-Republican Party","2915",76,2908,38.2631578947368,17724
+"37","LyndonBJohnson-1","Lyndon Johnson","LyndonBJohnson",1,"Democratic","1507",95,1499,15.7789473684211,8181
+"38","MartinvanBuren-1","Martin van Buren","MartinvanBuren",1,"Democratic","3843",98,3826,39.0408163265306,23389
+"39","RichardNixon-1","Richard Nixon","RichardNixon",1,"Republican","2128",105,2105,20.047619047619,11505
+"40","RichardNixon-2","Richard Nixon","RichardNixon",2,"Republican","1803",70,1834,26.2,10114
+"41","RonaldReagan-1","Ronald Reagan","RonaldReagan",1,"Republican","2427",132,2424,18.3636363636364,13696
+"42","RonaldReagan-2","Ronald Reagan","RonaldReagan",2,"Republican","2561",128,2562,20.015625,14580
+"43","RutherfordBHayes-1","Rutherford Hayes","RutherfordBHayes",1,"Republican","2486",59,2471,41.8813559322034,14899
+"44","TheodoreRoosevelt-1","Theodore Roosevelt","TheodoreRoosevelt",1,"Republican","984",33,983,29.7878787878788,5565
+"45","ThomasJefferson-1","Thomas Jefferson","ThomasJefferson",1,"Democratic-Republican Party","1730",41,1717,41.8780487804878,10115
+"46","ThomasJefferson-2","Thomas Jefferson","ThomasJefferson",2,"Democratic-Republican Party","2166",45,2157,47.9333333333333,12890
+"47","UlyssesSGrant-1","Ulysses Grant","UlyssesSGrant",1,"Republican","1127",40,1121,28.025,6480
+"48","UlyssesSGrant-2","Ulysses Grant","UlyssesSGrant",2,"Republican","1339",43,1335,31.046511627907,7711
+"49","WarrenGHarding-1","Warren Harding","WarrenGHarding",1,"Republican","3329",148,3324,22.4594594594595,20244
+"50","WilliamHenryHarrison-1","William Henry Harrison","WilliamHenryHarrison",1,"Whig","8460",214,8425,39.3691588785047,49681
+"51","WilliamHowardTaft-1","William Howard Taft","WilliamHowardTaft",1,"Republican","5434",159,5427,34.1320754716981,32118
+"52","WilliamJClinton-1","William Clinton","WilliamJClinton",1,"Democratic","1598",92,1599,17.3804347826087,9065
+"53","WilliamJClinton-2","William Clinton","WilliamJClinton",2,"Democratic","2155",110,2154,19.5818181818182,12140
+"54","WilliamMcKinley-1","William McKinley","WilliamMcKinley",1,"Republican","3968",130,3957,30.4384615384615,23634
+"55","WilliamMcKinley-2","William McKinley","WilliamMcKinley",2,"Republican","2218",100,2213,22.13,13415
+"56","WoodrowWilson-1","Woodrow Wilson","WoodrowWilson",1,"Democratic","1704",68,1700,25,9554
+"57","WoodrowWilson-2","Woodrow Wilson","WoodrowWilson",2,"Democratic","1526",59,1522,25.7966101694915,8350
+"58","ZacharyTaylor-1","Zachary Taylor","ZacharyTaylor",1,"Whig","1090",22,1087,49.4090909090909,6593

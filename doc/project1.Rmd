@@ -18,6 +18,18 @@ print(R.version)
 ```
 
 ```{r lib, warning=FALSE, results='hide', message=FALSE}
+packages.used=c("RColorBrewer", "tidytext", "text2vec", 
+                "wordcloud", "ggplot2", "dplyr",
+                "tm", "stringr")
+
+# check packages that need to be installed.
+packages.needed=setdiff(packages.used, 
+                        intersect(installed.packages()[,1], 
+                                  packages.used))
+# install additional packages
+if(length(packages.needed)>0){
+  install.packages(packages.needed, dependencies = TRUE)
+}
 library(tm)
 library(ggplot2)
 library(wordcloud)
@@ -26,10 +38,9 @@ library(dplyr)
 library(tidytext)
 library(stringr)
 library(text2vec)
-library(dplyr)
 
 path<-getwd()
-folder.path <- "../data/inaugurals/"
+folder.path <- "../data/InauguralSpeeches/"
 speeches<-list.files(path = folder.path, pattern = "*.txt")
 prex.out<- substr(speeches, 6, nchar(speeches)-4)
 
@@ -55,7 +66,7 @@ nc<-numeric(length(speeches))
 words<-rep(NA, length(speeches))
 
 for(i in 1:length(speeches)){
-  words[i]<-readLines(con = paste(substr(path, 1,nchar(path)-3),"data/inaugurals/", speeches[i], sep = ""))
+  words[i]<-readLines(con = paste(substr(path, 1,nchar(path)-3),"data/InauguralSpeeches/", speeches[i], sep = ""))
   #print(words)
   words[i]<-gsub("M[rs][rs]?\\.?", "A", words[i])
   words[i]<-gsub("\\.[A-Z0-9]", "\\. I", words[i])
@@ -180,7 +191,6 @@ tdm.overall=summarise(group_by(tdm.tidy, term), sum(count))
 The overall Word Cloud:
 
 ```{r oc}
-
 wordcloud(tdm.overall$term, tdm.overall$`sum(count)`,
           scale=c(5,0.5),
           max.words=100,
@@ -190,8 +200,6 @@ wordcloud(tdm.overall$term, tdm.overall$`sum(count)`,
           use.r.layout=T,
           random.color=FALSE,
           colors=brewer.pal(9,"Blues"))
-
-
 ```
 
 One probelm of this word cloud is that there are still some modal verb such as "will", "must", "shall", "can" and some common words such as "people", "government", "one". Thus, we further removed these words from the data.
@@ -211,7 +219,6 @@ We used the standard Timeline on Wikipedia to divide the history of U.S into 5 p
 Then we drew the word cloud for each of five eras:
 
 ```{r five}
-
 dtm <- DocumentTermMatrix(ff.all,control = list(weighting = function(x) weightTfIdf(x, normalize =FALSE),stopwords = TRUE))
 ff.dtm=tidy(dtm)
 
@@ -245,11 +252,13 @@ for(i in 1:5){
 
 As we can see from the five word clouds, even though there are some common words in all eras, difference in the topics or words chosen are still obvious.
 
-For example, in the graph of first two eras we can see that words such as "States" and "Constitution" are very large while in last two we find the recent leaders tried to emphasize on the importance of "World" and "nation".
+For example, in the graph of first two eras we can see that words such as "States" and "Constitution" are very large while in last two we find the recent leaders tried to emphasize on the importance of "World" and "Nation". Related to U.S history, we can try to understand the change in the ideology of this changing of using words. 
 
-Also, the word "peace" is emphasized in each era that after a major war: after Indepedence war, after WWI and after WWII. This could indicate that only the war would bring the real desire toward "Peace". 
+Also, the word "Peace" is emphasized in each era that after a major war: after Indepedence war, after WWI and after WWII. This could indicate that only the war would bring the real desire toward "Peace". 
 
-Other changes can also noticed such as the words "free" and "freedom" shows in recent years but not in the remote past. 
+Other changes can also noticed such as the words "Free" and "Freedom" shows in recent years but not in the remote past. In contrast, we saw words such as "Power" and "Laws" from speeches in 1789-1849 and 1849-1918.
+
+1849-1918 is the so-called "Progressive Era" in U.S. history and we do see the word "Progressive" there in this word cloud. 
 
 
 ## Similarities over times
@@ -328,6 +337,15 @@ axis(2, at = 1:5, labels=colnames(similarity),srt=45,tick=FALSE, cex.axis = 0.5)
 <p align="right"><font size = 0.5>(Special thanks to Heng Huang for selecting decent colors of the matrix.)</font></p>
 
 The darker color means that the similarities is higher between those two eras. Then we can find that the speeches in each era are pretty similar to each other, which can be shown by the darker colors on the diagonal. We can also find that the neaby eras are more likely to have higher similarities, for example the most recent era, 1991-2017, has higher similarity with 1945-1991 and 1918-1945 than that with 1895-1918. However, the simlarity of speeches from 1789-1845 and from 1845 to 1918 are lower: this could be explained by the rapidlly change of ideas in that age. It worth noticed that even in the era 1895-1918, the self-similarity is the lowest among all eras. 
+
+The highest similarity in the matrix is the self-similarity of speeches from era of 1918-1945. One potential reason of this is because the time duration is relatively short and the era is in between WWI and WWII, so the topics of inaugurals could be more concentrated than others. 
+
+Other interesting results includes that though the similarity of era 1991-2017 and era 1789-1849 is very low, they both share higher similarity with era 1918-1945.
+
+
+## Conclusion:
+
+Every era has its own aspects and feature, I hope my work here can give readers a breif understanding about what have changed over this three hundreds years. The length of sentences, the topics and words used, all these changes are just the reflection of how this country, how the soceity and how people have been changed over years. Due to limitation of time and ability to conduct this project, the results and findings from my work are also limited. However, surely, if we look closer to the data there must be more interesting features waiting for exploring. 
 
 ## Appendix:
 
